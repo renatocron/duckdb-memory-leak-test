@@ -51,6 +51,57 @@ npm run test:gc         # With garbage collection
 npm run test:limit      # Limited to 100 iterations
 ```
 
+
+## Results
+
+After running tests, you’ll have large JSON logs like:
+
+```
+memory\_stats\_duckdb\_*.json
+memory\_stats\_postgres\_*.json
+memory\_stats\_sqlite\_\*.json
+```
+
+### Visualizing & Comparing Memory (Python helper)
+
+This repo includes a Python helper, `mem_compare.py`, and a small HTML page to visualize results.
+
+- **Aligns** series by the max common iteration (apples-to-apples)
+- **Downsamples** (bucket average) to a target number of points
+- Outputs a **PNG plot** and/or a compact **reduced.json** for web use
+
+#### Quick usage
+
+```bash
+# Plot RSS (MB) for all three logs (outputs plot.png)
+./mem_compare.py memory_stats_*.json --output-plot plot.png --target-points 300
+
+# Create a compact JSON for the web (outputs reduced.json)
+./mem_compare.py memory_stats_*.json --output-json reduced.json --target-points 400
+
+# Use a different metric (heapUsed, heapTotal, external, arrayBuffers)
+./mem_compare.py memory_stats_*.json --metric heapUsed --output-plot heap_used.png
+```
+
+#### Local web view (avoids CORS)
+
+The HTML page (`memory_compare_template.html`) loads `reduced.json` and renders an interactive Plotly chart. Serve both files from the same directory:
+
+```bash
+# In the project root (or the folder containing memory_compare_template.html and reduced.json)
+python3 -m http.server 8080
+```
+
+Then open:
+
+```
+http://localhost:8080/memory_compare_template.html
+```
+
+**Tip:** If you prefer a different port, change `8080`.
+
+```
+
 ### Environment Variables
 
 | Variable | Default | Description |
@@ -202,6 +253,54 @@ Look for:
 - **Mode Differences**: Different growth patterns between test modes
 
 ## Troubleshooting
+
+## Analysis Tooling (Python)
+
+### Files
+- `mem_compare.py` — CLI to align, downsample, and either plot or emit `reduced.json`
+- `memory_compare_template.html` — loads `reduced.json` and renders a Plotly line chart
+
+### Typical workflows
+
+**1) Fast static comparison (PNG)**
+```bash
+./mem_compare.py memory_stats_*.json --output-plot plot.png --target-points 300
+```
+
+**2) Interactive browser view**
+
+```bash
+./mem_compare.py memory_stats_*.json --output-json reduced.json --target-points 400
+python3 -m http.server 8080
+# Open http://localhost:8080/memory_compare_template.html
+```
+
+**3) Alternate metric**
+
+```bash
+./mem_compare.py memory_stats_*.json --metric heapUsed --output-plot heap_used.png
+```
+
+### Notes
+
+* The script infers labels from filenames: **DuckDB**, **SQLite**, **Postgres**.
+* By default it trims to the **max common iteration** across inputs for fair comparison.
+* Use `--no-align` if you want to compare full, unmatched ranges.
+* Units in plots/JSON are **MB** for byte-like metrics.
+
+### Example JSON (reduced)
+
+```json
+{
+  "metric": "rss",
+  "unit": "MB",
+  "series": [
+    {"label": "DuckDB", "points": [{"iteration": 0, "value": 103.2}]},
+    {"label": "Postgres", "points": [{"iteration": 0, "value": 110.1}]},
+    {"label": "SQLite", "points": [{"iteration": 0, "value": 98.7}]}
+  ]
+}
+```
 
 ### PostgreSQL Connection Issues
 

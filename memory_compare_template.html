@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Memory Comparison</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; margin: 2rem; }
+      #chart { width: 100%; height: 70vh; }
+      .meta { color: #666; margin-bottom: 1rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Memory vs Iteration</h1>
+    <div class="meta" id="meta"></div>
+    <div id="chart"></div>
+    <script>
+      async function run() {
+        const res = await fetch('reduced.json', {cache: 'no-store'});
+        const data = await res.json();
+        document.getElementById('meta').textContent = `Metric: ${data.metric} (${data.unit})`;
+        const traces = data.series.map(s => ({
+          x: s.points.map(p => p.iteration),
+          y: s.points.map(p => p.value),
+          mode: 'lines',
+          name: s.label
+        }));
+        Plotly.newPlot('chart', traces, {
+          xaxis: { title: 'Iteration' },
+          yaxis: { title: `${data.metric} (${data.unit})` },
+          margin: { t: 40 }
+        }, {responsive: true});
+      }
+      run();
+    </script>
+  </body>
+</html>
