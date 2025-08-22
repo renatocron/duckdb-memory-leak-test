@@ -111,7 +111,6 @@ http://localhost:8080/memory_compare_template.html
 
 **Tip:** If you prefer a different port, change `8080`.
 
-```
 
 ### Environment Variables
 
