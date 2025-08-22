@@ -1,0 +1,35 @@
+{
+    "name": "duckdb-memory-leak-test",
+    "version": "1.0.0",
+    "description": "Memory leak investigation tool for DuckDB Node.js API",
+    "main": "memory_test.js",
+    "type": "module",
+    "scripts": {
+        "test": "node memory_test.js",
+        "test:duckdb": "TEST_MODE=duckdb node memory_test.js",
+        "test:sqlite": "TEST_MODE=sqlite node memory_test.js",
+        "test:postgres": "TEST_MODE=postgres node memory_test.js",
+        "test:all": "MAX_ITERATIONS=10000 TEST_MODE=all node memory_test.js",
+        "test:fast": "QUERY_INTERVAL=50 node memory_test.js",
+        "test:slow": "QUERY_INTERVAL=5000 node memory_test.js",
+        "test:new-conn": "NEW_CONNECTION=true node memory_test.js",
+        "test:gc": "node --expose-gc memory_test.js",
+        "test:limit": "MAX_ITERATIONS=1000 node memory_test.js",
+        "test:verbose": "MEMORY_LOG_INTERVAL=10 node memory_test.js"
+    },
+    "dependencies": {
+        "@duckdb/node-api": "^1.2.0-alpha.14"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "keywords": [
+        "duckdb",
+        "memory-leak",
+        "testing",
+        "postgresql",
+        "sqlite"
+    ],
+    "author": "Memory Leak Investigator",
+    "license": "MIT"
+}
