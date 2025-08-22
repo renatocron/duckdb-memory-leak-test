@@ -2,6 +2,13 @@
 
 This tool helps investigate memory leaks in DuckDB Node.js applications by running continuous queries against different data sources and monitoring memory usage patterns.
 
+# TLDR
+
+Snapshot from a test with 1.2.0-alpha.15
+
+![Memory usage plot](plot.png)
+
+
 ## Setup
 
 ### 1. Install Dependencies
