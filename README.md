@@ -6,7 +6,11 @@ This tool helps investigate memory leaks in DuckDB Node.js applications by runni
 
 Snapshot from a test with 1.2.0-alpha.15
 
+RSS
 ![Memory usage plot](plot.png)
+
+Heap (FORCE_GC=false)
+![Memory usage plot](heap_used.png)
 
 
 ## Setup
